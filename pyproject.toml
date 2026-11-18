@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastapi-blog-api"
+version = "0.1.0"
+description = "A small learning-focused FastAPI blog API."
+requires-python = ">=3.12"
+dependencies = [
+    "alembic==1.20.1",
+    "email-validator==2.4.0",
+    "fastapi==0.163.1",
+    "psycopg[binary]==3.3.9",
+    "pydantic==2.14.3",
+    "pydantic-settings==2.16.3",
+    "PyJWT==2.15.1",
+    "pwdlib[argon2]==0.4.2",
+    "SQLAlchemy==2.1.9",
+    "uvicorn[standard]==0.54.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx==0.28.1",
+    "pytest==8.4.2",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
