@@ -17,7 +17,6 @@ class UserCredentials(RequestModel):
             return value.strip().lower()
         return value
 
-
 class UserCreate(UserCredentials):
     pass
 
