@@ -20,6 +20,9 @@ class User(Base):
         DateTime(timezone=True), default=utc_now, server_default=func.now()
     )
 
+    # relationship(): a Python attribute. It lets you write user.posts and get a list of Post 
+    # objects. The database knows nothing about it, it only exists in your code.No foreign key is
+    # created or stored here.
     posts: Mapped[list["Post"]] = relationship(
         back_populates="author", cascade="all, delete-orphan"
     )
@@ -43,11 +46,14 @@ class Post(Base):
         server_default=func.now(),
         onupdate=utc_now,
     )
+    # This is the user_id column, which stores the ID of the author of the post.
     author_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
 
+    # This is where we define the relationship to the User model.
     author: Mapped[User] = relationship(back_populates="posts")
+    # This is where we define the relationship to the Comment model.
     comments: Mapped[list["Comment"]] = relationship(
         back_populates="post",
         cascade="all, delete-orphan",
@@ -69,12 +75,15 @@ class Comment(Base):
         server_default=func.now(),
         onupdate=utc_now,
     )
+    # This is the 'user_id' column, which stores the ID of the author of the comment.
     author_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
+    # This is the 'post_id' column, which stores the ID of the post the comment belongs to.
     post_id: Mapped[int] = mapped_column(
         ForeignKey("posts.id", ondelete="CASCADE"), index=True
     )
-
+    # This is where we define the relationship to the User model.
     author: Mapped[User] = relationship(back_populates="comments")
+    # This is where we define the relationship to the Post model.
     post: Mapped[Post] = relationship(back_populates="comments")

@@ -10,7 +10,11 @@ from app.database import get_db
 from app.models import User
 from app.security import ALGORITHM
 
+# Dependency. Extract the JWT token from the request's Authorization header using the HTTPBearer scheme
+# The scheme is simply this: Authorization: Bearer eyJhbGciOiJIUzI1NiIs... Bearer = scheme
 bearer_scheme = HTTPBearer(auto_error=False)
+
+# Session: the object you use to talk to the database (query, add, commit)
 DbSession = Annotated[Session, Depends(get_db)]
 
 
@@ -47,5 +51,9 @@ def get_current_user(
         raise unauthorized
     return user
 
-
+# Dependency for getting the current authenticated user
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+
+

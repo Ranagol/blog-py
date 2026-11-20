@@ -6,14 +6,17 @@ from app.dependencies import DbSession
 from app.models import User
 from app.schemas import TokenResponse, UserCreate, UserCredentials, UserRead
 from app.security import (
-    DUMMY_PASSWORD_HASH,
     create_access_token,
     hash_password,
+    password_hash,
     verify_password,
 )
 
+# This is actually a router for user-related operations like registration and login
 router = APIRouter(prefix="/users", tags=["users"])
 
+# Used for preventing timing attacks by always verifying a password hash, even if the user does not exist
+DUMMY_PASSWORD_HASH = password_hash.hash("not-a-real-user-password")
 
 @router.post(
     "/register",
@@ -47,6 +50,7 @@ def register_user(payload: UserCreate, db: DbSession) -> User:
 def login(payload: UserCredentials, db: DbSession) -> TokenResponse:
     email = str(payload.email).lower()
     user = db.scalar(select(User).where(User.email == email))
+    # WHY DO WE NEED DUMMY_PASSWORD_HASH? 
     hashed_password = user.hashed_password if user is not None else DUMMY_PASSWORD_HASH
     password_is_valid = verify_password(payload.password, hashed_password)
     if user is None or not password_is_valid:
