@@ -29,6 +29,9 @@ class User(Base):
     comments: Mapped[list["Comment"]] = relationship(
         back_populates="author", cascade="all, delete-orphan"
     )
+    hamsters: Mapped[list["Hamster"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
 
 
 class Post(Base):
@@ -87,3 +90,25 @@ class Comment(Base):
     author: Mapped[User] = relationship(back_populates="comments")
     # This is where we define the relationship to the Post model.
     post: Mapped[Post] = relationship(back_populates="comments")
+
+class Hamster(Base):
+    __tablename__ = 'hamsters'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(Text)
+    age: Mapped[int] = mapped_column(Integer)
+    color: Mapped[str] = mapped_column(Text)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utc_now,
+        server_default=func.now(),
+        onupdate=utc_now,
+    )
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    user: Mapped[User] = relationship(back_populates="hamsters")

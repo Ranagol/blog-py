@@ -21,6 +21,7 @@ app.include_router(comments.post_router)
 # comment_router has the /comments prefix, so it handles updating and deleting a comment by its ID: /comments/{comment_id}.
 app.include_router(comments.comment_router)
 
-# @app.get('/hamsters', tags=['hamsters'])
-# def get_hamsters() -> list[Hamster]
+
+
+
 

@@ -12,7 +12,7 @@ comment_router = APIRouter(prefix="/comments", tags=["comments"])
 def get_existing_post(post_id: int, db: DbSession) -> Post:
     post = db.get(Post, post_id)
     if post is None:
-        raise HTTPException(
+        raise HTTPException( 
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Post not found",
         )

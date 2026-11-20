@@ -1,7 +1,10 @@
 from collections.abc import Generator
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+
 from app.config import settings
+
 
 # DeclarativeBase: parent class for your table models, comes from SQLAlchemy ORM
 class Base(DeclarativeBase):

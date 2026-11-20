@@ -1,6 +1,7 @@
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 # BaseSettings loads and validates setting from .env file.
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(

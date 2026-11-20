@@ -2,18 +2,18 @@ from fastapi import APIRouter, HTTPException, Response, status
 from sqlalchemy import desc, select
 
 from app.dependencies import CurrentUser, DbSession
-from app.models import Post
-from app.schemas import PostCreate, PostRead, PostUpdate
+from app.models import Post  # sqlalchemy models
+from app.schemas.posts import PostCreate, PostRead, PostUpdate  # pydantic schemas
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
-
+# LIST ALL
 @router.get("", response_model=list[PostRead])
 def list_posts(db: DbSession) -> list[Post]:
     statement = select(Post).order_by(desc(Post.created_at), desc(Post.id))
     return list(db.scalars(statement).all())
 
-
+# GET POST
 @router.get("/{post_id}", response_model=PostRead)
 def get_post(post_id: int, db: DbSession) -> Post:
     post = db.get(Post, post_id)
@@ -24,7 +24,8 @@ def get_post(post_id: int, db: DbSession) -> Post:
         )
     return post
 
-
+# CREATE POST
+# create_post return Post sqlalchemy model. This will be serialized to PostRead pydantic schema in the response.
 @router.post("", response_model=PostRead, status_code=status.HTTP_201_CREATED)
 def create_post(payload: PostCreate, db: DbSession, current_user: CurrentUser) -> Post:
     post = Post(
@@ -37,7 +38,7 @@ def create_post(payload: PostCreate, db: DbSession, current_user: CurrentUser) -
     db.refresh(post)
     return post
 
-
+# UPDATE POST
 @router.put("/{post_id}", response_model=PostRead)
 def update_post(
     post_id: int,
@@ -63,7 +64,7 @@ def update_post(
     db.refresh(post)
     return post
 
-
+# DELETE POST
 @router.delete(
     "/{post_id}",
     status_code=status.HTTP_204_NO_CONTENT,
