@@ -440,6 +440,12 @@ Provide an appropriate `.env.example`.
 
 Use a clearly named development database, for example `blog_dev`.
 
+To add the two example users to a migrated development database, run
+`docker compose exec backend python -m app.seed`. The example accounts
+and their passwords are defined in `app/seed.py` for local development.
+Neither account has special permissions. The command fails if either email
+already exists.
+
 ### Test database
 
 The automated tests must use a separate PostgreSQL database, for example
@@ -713,6 +719,11 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
    ```
 
 5. Open Swagger UI at <http://localhost:8000/docs>.
+
+The backend mounts the project directory read-only at `/app`, so file
+changes on the host are visible in the container. Restart the backend
+to load application code changes. Rebuild the image when dependencies
+change; mounting files does not install packages.
 
 The first database startup runs `scripts/init-databases.sql` and creates
 the `blog_dev` and `blog_test` databases and their separate application

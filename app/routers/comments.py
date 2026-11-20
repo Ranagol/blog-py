@@ -3,7 +3,7 @@ from sqlalchemy import select
 
 from app.dependencies import CurrentUser, DbSession
 from app.models import Comment, Post
-from app.schemas import CommentCreate, CommentRead, CommentUpdate
+from app.schemas.comments import CommentCreate, CommentRead, CommentUpdate
 
 post_router = APIRouter(prefix="/posts", tags=["comments"])
 comment_router = APIRouter(prefix="/comments", tags=["comments"])

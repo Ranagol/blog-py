@@ -4,11 +4,10 @@ from sqlalchemy.exc import IntegrityError
 
 from app.dependencies import DbSession
 from app.models import User
-from app.schemas import TokenResponse, UserCreate, UserCredentials, UserRead
+from app.schemas.auth import TokenResponse, UserCreate, UserCredentials, UserRead
 from app.security import (
     create_access_token,
     hash_password,
-    password_hash,
     verify_password,
 )
 
@@ -16,7 +15,7 @@ from app.security import (
 router = APIRouter(prefix="/users", tags=["users"])
 
 # Used for preventing timing attacks by always verifying a password hash, even if the user does not exist
-DUMMY_PASSWORD_HASH = password_hash.hash("not-a-real-user-password")
+DUMMY_PASSWORD_HASH = hash_password("not-a-real-user-password")
 
 @router.post(
     "/register",

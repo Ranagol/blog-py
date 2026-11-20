@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from pydantic.v1 import BaseModel, ConfigDict, EmailStr, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 
 from app.schemas.base import RequestModel
 
 
-class UserCreate(RequestModel):
+class UserCredentials(RequestModel):
     email: EmailStr
     password: str
 
@@ -15,6 +15,10 @@ class UserCreate(RequestModel):
         if isinstance(value, str):
             return value.strip().lower()
         return value
+
+
+class UserCreate(UserCredentials):
+    pass
 
 
 class UserRead(BaseModel):
