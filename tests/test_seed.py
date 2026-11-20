@@ -19,10 +19,18 @@ def test_seed_persists_users_with_hashed_passwords(
 
     seed.seed(seed.users)
 
-    assert capsys.readouterr().out == "Seeding succeeded: 2 users added.\n"
+    assert capsys.readouterr().out == (
+        "Seeding succeeded: 2 users, 4 posts, and 8 comments added.\n"
+    )
     with session_factory() as session:
         users = {user.email: user for user in session.scalars(select(User)).all()}
         assert set(users) == {"admin@example.com", "demo@example.com"}
+        for user in users.values():
+            assert len(user.posts) == 2
+            for post in user.posts:
+                assert len(post.comments) == 2
+                assert post.author_id == user.id
+                assert all(comment.author_id == user.id for comment in post.comments)
         assert verify_password(
             "admin-password", users["admin@example.com"].hashed_password
         )
