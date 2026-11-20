@@ -21,10 +21,6 @@ def list_hamsters(
 def get_hamster(hamster_id: int):
     return {"id": hamster_id}
 
-
-
-
-
 # CREATE
 @router.post('/hamsters', tags=['hamsters'])
 def create_hamster(payload: HamsterCreate):
