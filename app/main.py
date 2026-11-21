@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 
 from app.routers import auth, comments, posts
 
@@ -21,7 +22,8 @@ app.include_router(comments.post_router)
 # comment_router has the /comments prefix, so it handles updating and deleting a comment by its ID: /comments/{comment_id}.
 app.include_router(comments.comment_router)
 
-
+# We add pagination to our app
+add_pagination(app) 
 
 
 

@@ -1,4 +1,6 @@
 from fastapi import APIRouter, HTTPException, Response, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import desc, select
 
 from app.dependencies import CurrentUser, DbSession
@@ -8,10 +10,10 @@ from app.schemas.posts import PostCreate, PostRead, PostUpdate  # pydantic schem
 router = APIRouter(prefix="/posts", tags=["posts"])
 
 # LIST ALL
-@router.get("", response_model=list[PostRead])
-def list_posts(db: DbSession) -> list[Post]:
+@router.get("", response_model=Page[PostRead])
+def list_posts(db: DbSession) -> Page[Post]:
     statement = select(Post).order_by(desc(Post.created_at), desc(Post.id))
-    return list(db.scalars(statement).all())
+    return paginate(db, statement)
 
 # GET POST
 @router.get("/{post_id}", response_model=PostRead)

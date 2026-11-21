@@ -293,6 +293,7 @@ dependencies = [
     { name = "factory-boy" },
     { name = "faker" },
     { name = "fastapi" },
+    { name = "fastapi-pagination" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pwdlib", extra = ["argon2"] },
     { name = "pydantic" },
@@ -315,6 +316,7 @@ requires-dist = [
     { name = "factory-boy", specifier = ">=3.3.3" },
     { name = "faker", specifier = ">=40.54.0" },
     { name = "fastapi", specifier = "==0.163.1" },
+    { name = "fastapi-pagination", specifier = ">=0.16.3" },
     { name = "httpx", marker = "extra == 'dev'", specifier = "==0.28.1" },
     { name = "psycopg", extras = ["binary"], specifier = "==3.3.9" },
     { name = "pwdlib", extras = ["argon2"], specifier = "==0.4.2" },
@@ -326,6 +328,20 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], specifier = "==0.54.0" },
 ]
 provides-extras = ["dev"]
+
+[[package]]
+name = "fastapi-pagination"
+version = "0.16.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e8/50/8938abf7faee7e93e6aeede7c737ca2b5537bb3b6405467b344562f03db2/fastapi_pagination-0.16.3.tar.gz", hash = "sha256:881bc0c2f389346afbff8ea6359f511cda6afbc71ad07baff1c60617fa54dd8b", size = 670086, upload-time = "2026-11-12T18:26:03.438Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/95/d8/720bb00256b1e3c26bd365ed3a2b2ce37dbc65d67c297ad2caded18e4947/fastapi_pagination-0.16.3-py3-none-any.whl", hash = "sha256:4db172f797a4adca1e662612a02c11409418bea18d86dc62fe595f8b0e5a599f", size = 56086, upload-time = "2026-11-12T18:26:02.207Z" },
+]
 
 [[package]]
 name = "h11"
