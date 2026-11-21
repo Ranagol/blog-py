@@ -440,11 +440,18 @@ Provide an appropriate `.env.example`.
 
 Use a clearly named development database, for example `blog_dev`.
 
-To add the two example users to a migrated development database, run
-`docker compose exec backend python -m app.seed`. The example accounts
-and their passwords are defined in `app/seed.py` for local development.
-Neither account has special permissions. The command fails if either email
-already exists.
+To add a default user and ten generated users, two posts per user, and two
+comments per post to a migrated development database, run
+`docker compose exec backend python -m app.seed`. Comment authors are randomly
+selected from the seeded users. The default user's email and password can be
+configured with `DEFAULT_USER_EMAIL` and `DEFAULT_USER_PASSWORD`. The generated
+users use the password `factory-password`; Faker supplies their emails and the
+post and comment text. None has special permissions. The command fails if a
+seeded email already exists.
+
+To delete all data from the application tables while preserving the tables and
+migration history, run `docker compose exec backend python -m scripts.reset_db`.
+This permanently removes the application data from the configured database.
 
 ### Test database
 
@@ -705,7 +712,8 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
 1. Copy `.env.example` to `.env`.
 2. Replace the local database passwords and `SECRET_KEY`. Generate a
    local signing secret with `openssl rand -hex 32`. Do not use the
-   example values outside local development.
+   example values outside local development. Set `HOST_UID` and `HOST_GID`
+   in `.env` to the output of `id -u` and `id -g` on the host.
 3. Build and start the services:
 
    ```bash
@@ -720,10 +728,22 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
 
 5. Open Swagger UI at <http://localhost:8000/docs>.
 
-The backend mounts the project directory read-only at `/app`, so file
-changes on the host are visible in the container. Restart the backend
-to load application code changes. Rebuild the image when dependencies
-change; mounting files does not install packages.
+The backend mounts the project directory read-write at `/app` and runs as
+the configured host UID and GID, so container-generated files are writable
+by the host user. Existing `.env` files should also set `HOST_UID` and
+`HOST_GID`; if omitted, both default to `1000`. Recreate the backend after
+changing these values. Restart the backend to load application code changes.
+Rebuild the image when dependencies change; mounting files does not install
+packages.
+
+To generate a migration in the running backend container:
+
+```bash
+docker compose exec backend alembic revision --autogenerate -m "Describe change"
+```
+
+Review the generated migration, then apply it with `docker compose exec backend
+alembic upgrade head`.
 
 The first database startup runs `scripts/init-databases.sql` and creates
 the `blog_dev` and `blog_test` databases and their separate application

@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     # Used to create JWT tokens, and later to verify JWT tokens
     secret_key: SecretStr = Field(min_length=32)
     access_token_expire_minutes: int = Field(default=30, gt=0)
+    default_user_email: str = Field(default="default@example.com")
+    default_user_password: SecretStr = Field(default="factory-password")
 
 # This settings object has all the app settings. Now we can import it, when we need it.
 # It will be used in database.py, security.py, dependencies.py...
