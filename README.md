@@ -732,9 +732,10 @@ The backend mounts the project directory read-write at `/app` and runs as
 the configured host UID and GID, so container-generated files are writable
 by the host user. Existing `.env` files should also set `HOST_UID` and
 `HOST_GID`; if omitted, both default to `1000`. Recreate the backend after
-changing these values. Restart the backend to load application code changes.
-Rebuild the image when dependencies change; mounting files does not install
-packages.
+changing these values. The development server automatically reloads when
+Python files under `app/` change. Rebuild the image when dependencies change;
+mounting files does not install packages. Database model changes still require
+migrations.
 
 To generate a migration in the running backend container:
 

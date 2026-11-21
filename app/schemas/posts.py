@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, field_validator
 
 from app.schemas.base import AuthorRead, RequestModel
+from app.schemas.comments import CommentRead
 
 
 class PostCreate(RequestModel):
@@ -35,5 +36,6 @@ class PostRead(BaseModel):
     created_at: datetime
     updated_at: datetime
     author: AuthorRead
+    comments: list[CommentRead]
 
     model_config = ConfigDict(from_attributes=True)

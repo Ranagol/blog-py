@@ -21,6 +21,7 @@ services:
   backend:
     build: .
     user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/app"]
     volumes:
       - .:/app
     environment:
