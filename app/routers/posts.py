@@ -1,7 +1,9 @@
+from typing import Literal
+
 from fastapi import APIRouter, HTTPException, Response, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
-from sqlalchemy import desc, select
+from sqlalchemy import asc, desc, select
 
 from app.dependencies import CurrentUser, DbSession
 from app.models import Post  # sqlalchemy models
@@ -11,8 +13,25 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 
 # LIST ALL
 @router.get("", response_model=Page[PostRead])
-def list_posts(db: DbSession) -> Page[Post]:
-    statement = select(Post).order_by(desc(Post.created_at), desc(Post.id))
+def list_posts(
+    db: DbSession,
+    # Literal ensures that only the specified values are allowed for sort_by and order
+    sort_by: Literal["created_at", "title"] = "created_at",
+    order: Literal["asc", "desc"] = "desc",
+) -> Page[Post]:
+
+    # We transform here the value of sort fron FE (unsecure) to the corresponding SQLAlchemy column
+    SORT_COLUMNS = {
+        "created_at": Post.created_at,
+        "title": Post.title,
+    }
+
+    # From SORT_COLUMNS dictionary we get by key (title or created_at) the corresponding Post.created_at or Post.title column
+    column = SORT_COLUMNS[sort_by]
+    direction = desc if order == "desc" else asc
+
+    # direction is either asc or desc +(), that makes them a function from SQLAlchemy
+    statement = select(Post).order_by(direction(column), direction(Post.id))
     return paginate(db, statement)
 
 # GET POST
