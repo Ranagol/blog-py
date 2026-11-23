@@ -1,0 +1,25 @@
+services:
+  backend:
+    command:
+      [
+        "python",
+        "-Xfrozen_modules=off",
+        "-m",
+        "debugpy",
+        "--listen",
+        "0.0.0.0:5678",
+        "--configure-subProcess",
+        "true",
+        "-m",
+        "uvicorn",
+        "app.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+        "--reload-dir",
+        "/app/app",
+      ]
+    ports:
+      - "127.0.0.1:5678:5678"

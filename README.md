@@ -704,6 +704,7 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
 | PyJWT | 2.15.1 |
 | pwdlib | 0.4.2 |
 | Uvicorn | 0.54.0 |
+| debugpy | development dependency |
 | pytest | 8.4.2 |
 | HTTPX | 0.28.1 |
 
@@ -726,7 +727,8 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
    docker compose exec backend alembic upgrade head
    ```
 
-5. Open Swagger UI at <http://localhost:8000/docs>.
+5. Open Swagger UI at `http://localhost:<APP_PORT>/docs`, using the value of
+   `APP_PORT` in `.env`. It defaults to `8000`.
 
 The backend mounts the project directory read-write at `/app` and runs as
 the configured host UID and GID, so container-generated files are writable
@@ -736,6 +738,19 @@ changing these values. The development server automatically reloads when
 Python files under `app/` change. Rebuild the image when dependencies change;
 mounting files does not install packages. Database model changes still require
 migrations.
+
+### Debug with VS Code
+
+Select **Debug Blog API (Docker)** in VS Code's Run and Debug panel and press
+**F5**. VS Code builds and starts the database and backend, waits for the
+backend health check, then attaches debugpy. Breakpoints in application code
+work across Uvicorn's reload process. Stopping the debug session stops the
+containers while preserving the database volume.
+
+The default Compose setup does not expose a debug port. The debug setup uses
+`127.0.0.1:5678` and starts the API before attaching, so the server is available
+while VS Code connects. Send requests to the host port set by `APP_PORT` in
+`.env` (for example, `http://localhost:8003/docs` when `APP_PORT=8003`).
 
 To generate a migration in the running backend container:
 

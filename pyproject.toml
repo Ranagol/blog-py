@@ -25,6 +25,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "debugpy>=1.8.0",
     "httpx==0.28.1",
     "pytest==8.4.2",
 ]
