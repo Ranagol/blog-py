@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     # Used to create JWT tokens, and later to verify JWT tokens
     secret_key: SecretStr = Field(min_length=32)
     access_token_expire_minutes: int = Field(default=30, gt=0)
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     default_user_email: str = Field(default="default@example.com")
     default_user_password: SecretStr = Field(default="factory-password")
 

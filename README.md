@@ -9,11 +9,9 @@ is primarily a learning project, so avoid unnecessary complexity,
 abstractions, or advanced features unless they are required for the
 functionality described below.
 
-The application will initially be **backend/API only**. It will be
-tested manually through FastAPI's automatically generated
-documentation/interface and automatically through an automated test
-suite. A Vue.js frontend container may be added later, so the backend
-should expose a clean REST API suitable for a future Vue.js frontend.
+The application includes a minimal Vue.js frontend that checks its connection
+to the API. The API can also be tested through FastAPI's automatically
+generated documentation and the automated test suite.
 
 ## 2. Technology Stack
 
@@ -21,6 +19,7 @@ Use:
 
 -   Python
 -   FastAPI
+-   Vue.js and Vite
 -   PostgreSQL
 -   Docker
 -   Docker Compose
@@ -38,11 +37,7 @@ The application should run through Docker Compose with at least:
 
 -   `backend` --- FastAPI application
 -   `database` --- PostgreSQL database
-
-Do not add a frontend container yet.
-
-The project should be structured so that a Vue.js frontend can be added
-later without restructuring the entire backend.
+-   `frontend` --- Vue.js development server
 
 ## 3. Implementation Sequence
 
@@ -540,15 +535,12 @@ abstractions.
 Document the selected dependency versions and the key implementation
 choices in the README.
 
-## 16. Future Vue.js Frontend
+## 16. Vue.js Frontend
 
-There is **no Vue.js frontend in the initial implementation**.
-
-However, the API should be designed so that a Vue.js frontend can later
-be added as a separate Docker Compose service.
-
-The backend should remain a clean API with JSON request/response data
-and JWT bearer authentication suitable for a future Vue.js client.
+The Vue frontend is a separate Compose service with one component. It requests
+`GET /health` directly from the browser and displays the result or a connection
+error. Its custom request header triggers a CORS preflight, exercising the
+backend's CORS middleware. Tracefox remains enabled for backend requests.
 
 ## 17. Explicitly Out of Scope
 
@@ -572,7 +564,6 @@ Do not implement the following in the initial version:
 -   Redis
 -   Background jobs
 -   Notifications
--   Frontend
 -   Microservices
 
 These can be added later if needed.
@@ -601,8 +592,7 @@ FastAPI to understand every important part of the application:
 -   FastAPI's dependency system
 -   Automated testing
 
-The architecture should also leave a clean path for adding a Vue.js
-frontend later.
+The frontend is intentionally limited to a connection demonstration.
 
 ## 19. Automated Testing
 
@@ -708,6 +698,9 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
 | pytest | 8.4.2 |
 | HTTPX | 0.28.1 |
 
+The frontend uses Vue 3.5.46, Vite 8.3.8, and `@vitejs/plugin-vue` 6.0.11;
+its exact dependency tree is recorded in `frontend/package-lock.json`.
+
 ### Start the services
 
 1. Copy `.env.example` to `.env`.
@@ -733,6 +726,20 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
    The Compose development setup defaults `TRACEFOX_ENV` to `local`, where
    the dashboard is open. For other environments, set `TRACEFOX_ENV=production`
    and configure `TRACEFOX_USERNAME` and `TRACEFOX_PASSWORD` in `.env`.
+7. Open the Vue demo at `http://localhost:<FRONTEND_PORT>` (default `5173`).
+   It should report "Connected to the backend". Use **Check again** to retry.
+
+The frontend runs the Vite development server, not a production web server.
+The browser connects to the API on the same hostname as the frontend and
+`APP_PORT` (default `8000`). Set `VITE_API_URL` in `.env` to the browser-accessible
+API origin if this is not appropriate; do not use the Docker service name
+`backend` in a browser URL. CORS allows `http://localhost:<FRONTEND_PORT>` and
+`http://127.0.0.1:<FRONTEND_PORT>` by default. For other origins, set
+`CORS_ORIGINS` to a comma-separated list of exact frontend origins (including
+scheme and port). Recreate the services after changing these settings. For
+HTTPS deployments, use an HTTPS API URL to avoid browser mixed-content blocking.
+Frontend source changes reload automatically; rebuild the frontend image after
+changing dependencies or its Vite configuration.
 
 The backend mounts the project directory read-write at `/app` and runs as
 the configured host UID and GID, so container-generated files are writable

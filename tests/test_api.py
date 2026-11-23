@@ -43,6 +43,39 @@ def test_health_endpoint(client: TestClient) -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_frontend_cors_preflight_and_health(client: TestClient) -> None:
+    origin = settings.cors_origins.split(",")[0].strip()
+    preflight = client.options(
+        "/health",
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "x-frontend-check",
+        },
+    )
+    assert preflight.status_code == 200
+    assert preflight.headers["access-control-allow-origin"] == origin
+    assert "x-frontend-check" in preflight.headers["access-control-allow-headers"].lower()
+
+    response = client.get("/health", headers={"Origin": origin, "X-Frontend-Check": "vue"})
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+    assert response.headers["access-control-allow-origin"] == origin
+
+
+def test_cors_rejects_untrusted_origin(client: TestClient) -> None:
+    response = client.options(
+        "/health",
+        headers={
+            "Origin": "https://untrusted.invalid",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "x-frontend-check",
+        },
+    )
+    assert response.status_code == 400
+    assert "access-control-allow-origin" not in response.headers
+
+
 def test_registration_normalizes_email_and_does_not_expose_hash(
     client: TestClient,
 ) -> None:

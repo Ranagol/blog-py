@@ -32,6 +32,7 @@ services:
       TRACEFOX_ENV: ${TRACEFOX_ENV:-local}
       TRACEFOX_USERNAME: ${TRACEFOX_USERNAME:-}
       TRACEFOX_PASSWORD: ${TRACEFOX_PASSWORD:-}
+      CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost:${FRONTEND_PORT:-5173},http://127.0.0.1:${FRONTEND_PORT:-5173}}"
     ports:
       - "${APP_PORT:-8000}:8000"
     depends_on:
@@ -43,6 +44,20 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_PORT: ${APP_PORT:-8000}
+      VITE_API_URL: ${VITE_API_URL:-}
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend/src:/app/src:ro
+      - ./frontend/index.html:/app/index.html:ro
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data:
