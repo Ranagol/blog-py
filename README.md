@@ -729,6 +729,10 @@ The implementation uses Python 3.12 in the backend image and PostgreSQL
 
 5. Open Swagger UI at `http://localhost:<APP_PORT>/docs`, using the value of
    `APP_PORT` in `.env`. It defaults to `8000`.
+6. Open the Tracefox dashboard at `http://localhost:<APP_PORT>/tracefox`.
+   The Compose development setup defaults `TRACEFOX_ENV` to `local`, where
+   the dashboard is open. For other environments, set `TRACEFOX_ENV=production`
+   and configure `TRACEFOX_USERNAME` and `TRACEFOX_PASSWORD` in `.env`.
 
 The backend mounts the project directory read-write at `/app` and runs as
 the configured host UID and GID, so container-generated files are writable

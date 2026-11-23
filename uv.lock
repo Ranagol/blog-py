@@ -325,6 +325,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "pyjwt" },
     { name = "sqlalchemy" },
+    { name = "tracefox", extra = ["fastapi"] },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
@@ -352,6 +353,7 @@ requires-dist = [
     { name = "pyjwt", specifier = "==2.15.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==8.4.2" },
     { name = "sqlalchemy", specifier = "==2.1.9" },
+    { name = "tracefox", extras = ["fastapi"], specifier = ">=0.1.3" },
     { name = "uvicorn", extras = ["standard"], specifier = "==0.54.0" },
 ]
 provides-extras = ["dev"]
@@ -1069,6 +1071,23 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/48/bb/3d8757f21e9a53d9035c9eb039a777047139a16bfdbedfc7a58241c3d914/starlette-1.10.0.tar.gz", hash = "sha256:b8399098d4c1e3522734f7235dc79b1fc967f96cf139c81e0fa30479e0685f9b", size = 2734356, upload-time = "2026-10-24T15:04:12.342Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/88/2e/947cfe02def9371c07cd5bf5b6b61c829e9aecb9904db02a66cfafbc1eec/starlette-1.10.0-py3-none-any.whl", hash = "sha256:478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4", size = 80571, upload-time = "2026-10-24T15:04:10.371Z" },
+]
+
+[[package]]
+name = "tracefox"
+version = "0.1.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sqlalchemy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/23/bd/8a582ea3fda74df9697bf7b5175a0d3b955a7c33a063e3af8d134eb76ce6/tracefox-0.1.3.tar.gz", hash = "sha256:12e2fd9937659962a044d897bcfa2835d262819dde96cf6a113c78a5dae348cc", size = 125847, upload-time = "2026-10-26T12:27:19.418Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e8/cc/d9cfddbc2d44ccc6f33b594cead9dc13ff436f504a3c1dc3e4570778d0c0/tracefox-0.1.3-py3-none-any.whl", hash = "sha256:31d9e8400a36229982ab016c934575a48cb2c12985ecab81765da34c5288d5b7", size = 137555, upload-time = "2026-10-26T12:27:17.876Z" },
+]
+
+[package.optional-dependencies]
+fastapi = [
+    { name = "fastapi" },
 ]
 
 [[package]]

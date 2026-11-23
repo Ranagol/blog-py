@@ -1,9 +1,15 @@
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
+from tracefox.integrations.fastapi import init_tracefox
 
+from app.database import engine
 from app.routers import auth, comments, posts
 
+# Create the app
 app = FastAPI(title="blog-py")
+
+# Add Tracefox integration. Tracefox = Telescope for Python
+init_tracefox(app, engine=engine)
 
 # Health check endpoint. We simply check if the application is running.
 @app.get("/health", tags=["health"])
